@@ -1,6 +1,8 @@
 #ifndef _WADGEN_SNDFONT_H_
 #define _WADGEN_SNDFONT_H_
 
+#pragma pack(1)
+
 #ifdef _MSC_VER
 #define PACKED_STRUCT __pragma(pack(push, 1)) struct __pragma(pack(pop))
 #elif defined(__GNUC__)
