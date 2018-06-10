@@ -27,10 +27,11 @@
 
 #include "doomdef.h"
 #include "d_player.h"
-#include "w_wad.h"
 #include "info.h"
 #include "m_menu.h"
 #include "t_bsp.h"
+#include "d_main.h"
+#include <imp/Wad>
 
 #define FLOATSPEED        (FRACUNIT*4)
 
@@ -82,10 +83,10 @@ extern    thinker_t    thinkercap;
 extern    mobj_t        mobjhead;
 
 void P_InitThinkers(void);
-void P_AddThinker(thinker_t* thinker);
-void P_RemoveThinker(thinker_t* thinker);
-void P_LinkMobj(mobj_t* mobj);
-void P_UnlinkMobj(mobj_t* mobj);
+void P_AddThinker(void* thinker);
+void P_RemoveThinker(void* thinker);
+void P_LinkMobj(void* mobj);
+void P_UnlinkMobj(void* mobj);
 
 extern angle_t frame_angle;
 extern angle_t frame_pitch;
@@ -121,11 +122,12 @@ typedef struct {
     laser_t*    laser;
 } laserthinker_t;
 
-void P_SetupPsprites(player_t* curplayer);
-void P_MovePsprites(player_t* curplayer);
-void P_DropWeapon(player_t* player);
-void T_LaserThinker(laserthinker_t *laser);
-
+extern "C" {
+void P_SetupPsprites(void* curplayer);
+void P_MovePsprites(void* curplayer);
+void P_DropWeapon(void* player);
+void T_LaserThinker(void* laser);
+}
 
 //
 // P_USER
@@ -170,6 +172,7 @@ mobj_t*     P_SpawnMissile(mobj_t* source, mobj_t* dest, mobjtype_t type,
 //
 // P_ENEMY
 //
+extern "C"
 void P_NoiseAlert(mobj_t* target, mobj_t* emmiter);
 
 

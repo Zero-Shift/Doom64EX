@@ -24,13 +24,6 @@
 #ifndef __DOOMDEF__
 #define __DOOMDEF__
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <wtypes.h>//only for GUID type
-
-#endif // _WIN32
-
 #include <stdio.h>
 
 #include "doomtype.h"
@@ -39,12 +32,6 @@
 
 // build version
 extern const char version_date[];
-
-#ifdef _MSC_VER
-#pragma warning(disable:4761)   // integral size mismatch in argument; conversion supplied
-#pragma warning(error:4701)        // local variable *may* be used without init
-#pragma warning(error:4189)        // initialized but unused variable
-#endif
 
 void        _dprintf(const char *s, ...);
 void        *dmemcpy(void *s1, const void *s2, size_t n);
@@ -68,8 +55,8 @@ dboolean    dfcmp(float f1, float f2);
 int         dsprintf(char *buf, const char *format, ...);
 int         dsnprintf(char *src, size_t n, const char *str, ...);
 
-extern d_inline int D_abs(int x);
-extern d_inline float D_fabs(float x);
+int D_abs(int x);
+extern float D_fabs(float x);
 
 #define dcos(angle) finecosine[(angle) >> ANGLETOFINESHIFT]
 #define dsin(angle) finesine[(angle) >> ANGLETOFINESHIFT]
@@ -143,11 +130,12 @@ extern d_inline float D_fabs(float x);
 // The current state of the game: whether we are
 // playing, gazing at the intermission screen,
 // the game final animation, or a demo.
-typedef enum {
+typedef int gamestate_t;
+enum {
     GS_NONE,
     GS_LEVEL,
     GS_SKIPPABLE
-} gamestate_t;
+};
 
 //
 // Difficulty/skill settings/filters.
@@ -168,21 +156,20 @@ typedef enum {
 #define MTF_NONETGAME       2048   // Don't spawn in standard netgame mode
 #define MTF_NIGHTMARE       4096   // [kex] Nightmare thing
 
-typedef enum {
+typedef int skill_t;
+enum {
     sk_baby,
     sk_easy,
     sk_medium,
     sk_hard,
     sk_nightmare
-} skill_t;
-
-
-
+};
 
 //
 // Key cards.
 //
-typedef enum {
+typedef int card_t;
+enum {
     it_bluecard,
     it_yellowcard,
     it_redcard,
@@ -191,15 +178,15 @@ typedef enum {
     it_redskull,
 
     NUMCARDS
-
-} card_t;
+};
 
 
 
 // The defined weapons,
 //  including a marker indicating
 //  user has not changed weapon.
-typedef enum {
+typedef int weapontype_t;
+enum {
     wp_chainsaw,
     wp_fist,
     wp_pistol,
@@ -214,24 +201,23 @@ typedef enum {
 
     // No pending weapon change.
     wp_nochange
-
-} weapontype_t;
-
+};
 
 // Ammunition types defined.
-typedef enum {
+typedef int ammotype_t;
+enum {
     am_clip,    // Pistol / chaingun ammo.
     am_shell,   // Shotgun / double barreled shotgun.
     am_cell,    // Plasma rifle, BFG.
     am_misl,    // Missile launcher.
     NUMAMMO,
     am_noammo    // Unlimited for chainsaw / fist.
-
-} ammotype_t;
+};
 
 
 // Power up artifacts.
-typedef enum {
+typedef int powertype_t;
+enum {
     pw_invulnerability,
     pw_strength,
     pw_invisibility,
@@ -239,8 +225,7 @@ typedef enum {
     pw_allmap,
     pw_infrared,
     NUMPOWERS
-
-} powertype_t;
+};
 
 #define BONUSADD    4
 
@@ -248,14 +233,14 @@ typedef enum {
 // Power up durations,
 //  how many seconds till expiration,
 //
-typedef enum {
+typedef int powerduration_t;
+enum {
     INVULNTICS  = (30*TICRATE),
     INVISTICS   = (60*TICRATE),
     INFRATICS   = (120*TICRATE),
     IRONTICS    = (60*TICRATE),
     STRTICS     = (3*TICRATE)
-
-} powerduration_t;
+};
 
 // 20120209 villsa - game flags
 enum {
@@ -325,6 +310,7 @@ extern dboolean windowpause;
 #define KEY_RALT                (0x80+0x38)
 
 #define KEY_CAPS                0xba
+#define KEY_GRAVE               0xbb // Console button
 
 #define KEY_INSERT              0xd2
 #define KEY_HOME                0xc7

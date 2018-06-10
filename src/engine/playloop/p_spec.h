@@ -40,8 +40,8 @@ typedef struct {
     char        name[9];
     int         frames;
     int         speed;
-    dboolean    reverse;
-    dboolean    palette;
+    bool        reverse;
+    bool        palette;
 } animdef_t;
 
 extern int          numanimdef;
@@ -155,31 +155,32 @@ typedef struct {
 #define PULSESLOW           1
 #define PULSERANDOM         2
 
-void        P_SpawnFireFlicker(sector_t* sector);
-void        T_LightFlash(lightflash_t* flash);
-void        P_SpawnLightFlash(sector_t* sector);
-void        T_StrobeFlash(strobe_t* flash);
-void        T_FireFlicker(fireflicker_t* flick);
+void        P_SpawnFireFlicker(void* sector);
+void        T_LightFlash(void* flash);
+void        P_SpawnLightFlash(void* sector);
+void        T_StrobeFlash(void* flash);
+void        T_FireFlicker(void* flick);
 void        P_UpdateLightThinker(light_t* destlight, light_t* srclight);
-void        T_Sequence(sequenceGlow_t* seq);
+void        T_Sequence(void* seq);
 void        P_SpawnStrobeFlash(sector_t* sector, int speed);
 void        P_SpawnStrobeAltFlash(sector_t* sector, int speed);
-void        EV_StartLightStrobing(line_t* line);
-void        T_Glow(glow_t* g);
+void        EV_StartLightStrobing(void* line);
+void        T_Glow(void* g);
 void        P_SpawnGlowingLight(sector_t* sector, byte type);
 void        P_SpawnSequenceLight(sector_t* sector, dboolean first);
-void        P_CombineLightSpecials(sector_t* sector);
-void        T_Combine(combine_t *combine);
+void        P_CombineLightSpecials(void* sector);
+void        T_Combine(void* combine);
 dboolean    P_ChangeLightByTag(int tag1, int tag2);
 int         P_DoSectorLightChange(line_t* line, short tag);
 void        P_FadeInBrightness(void);
 
 
-typedef enum {
+typedef int bwhere_e;
+enum {
     top,
     middle,
     bottom
-} bwhere_e;
+};
 
 
 typedef struct {
@@ -210,16 +211,16 @@ void P_ChangeSwitchTexture(line_t* line, int useAgain);
 //
 // P_PLATS
 //
-typedef enum {
+typedef int plat_e;
+enum {
     up,
     down,
     waiting,
     in_stasis
-} plat_e;
+};
 
-
-
-typedef enum {
+typedef int plattype_e;
+enum {
     perpetualRaise,
     downWaitUpStay,
     raiseAndChange,
@@ -231,7 +232,7 @@ typedef enum {
     customDownUpFast,
     customUpDown,
     customUpDownFast
-} plattype_e;
+};
 
 
 
@@ -261,11 +262,11 @@ typedef struct {
 
 extern plat_t*    activeplats[MAXPLATS];
 
-void    T_PlatRaise(plat_t*    plat);
+void    T_PlatRaise(void*    plat);
 int        EV_DoPlat(line_t* line, plattype_e type, int amount);
-void    P_AddActivePlat(plat_t* plat);
-void    P_RemoveActivePlat(plat_t* plat);
-void    EV_StopPlat(line_t* line);
+void    P_AddActivePlat(void* plat);
+void    P_RemoveActivePlat(void* plat);
+void    EV_StopPlat(void* line);
 void    P_ActivateInStasis(int tag);
 
 
@@ -273,7 +274,8 @@ void    P_ActivateInStasis(int tag);
 // P_DOORS
 //
 
-typedef enum {
+typedef int vldoor_e;
+enum {
     normal,
     close30ThenOpen,
     doorclose,
@@ -282,9 +284,7 @@ typedef enum {
     blazeRaise,
     blazeOpen,
     blazeClose
-} vldoor_e;
-
-
+};
 
 typedef struct {
     thinker_t   thinker;
@@ -315,14 +315,15 @@ typedef struct {
 
 void    EV_VerticalDoor(line_t* line, mobj_t* thing);
 int     EV_DoDoor(line_t* line, vldoor_e type);
-void    T_VerticalDoor(vldoor_t* door);
+void    T_VerticalDoor(void* door);
 
 
 
 //
 // P_CEILNG
 //
-typedef enum {
+typedef int ceiling_e;
+enum {
     lowerToFloor,
     raiseToHighest,
     lowerAndCrush,
@@ -332,9 +333,7 @@ typedef enum {
     customCeiling,
     crushAndRaiseOnce,
     customCeilingToHeight
-} ceiling_e;
-
-
+};
 
 typedef struct {
     thinker_t    thinker;
@@ -361,17 +360,18 @@ typedef struct {
 extern ceiling_t*    activeceilings[MAXCEILINGS];
 
 int        EV_DoCeiling(line_t* line, ceiling_e type, fixed_t speed);
-void    T_MoveCeiling(ceiling_t* ceiling);
-void    P_AddActiveCeiling(ceiling_t* c);
-void    P_RemoveActiveCeiling(ceiling_t* c);
-int        EV_CeilingCrushStop(line_t* line);
-void    P_ActivateInStasisCeiling(line_t* line);
+void    T_MoveCeiling(void* ceiling);
+void    P_AddActiveCeiling(void* c);
+void    P_RemoveActiveCeiling(void* c);
+int        EV_CeilingCrushStop(void* line);
+void    P_ActivateInStasisCeiling(void* line);
 
 
 //
 // P_FLOOR
 //
-typedef enum {
+typedef int floor_e;
+enum {
     lowerFloor,             // lower floor to highest surrounding floor
     lowerFloorToLowest,     // lower floor to lowest surrounding floor
     turboLower,             // lower floor to highest surrounding floor VERY FAST
@@ -383,17 +383,13 @@ typedef enum {
     raiseFloorCrush,
     customFloor,
     customFloorToHeight
-} floor_e;
+};
 
-
-
-
-typedef enum {
+typedef int stair_e;
+enum {
     build8, // slowly build by 8
     turbo16 // quickly build by 16
-} stair_e;
-
-
+};
 
 typedef struct {
     thinker_t    thinker;
@@ -417,25 +413,23 @@ typedef struct {
     int          flrdir;
 } splitmove_t;
 
-
-
 #define FLOORSPEED FRACUNIT * 3
 
-typedef enum {
+typedef int result_e;
+enum {
     ok,
     crushed,
     pastdest,
     stop
-
-} result_e;
+};
 
 result_e T_MovePlane(sector_t* sector, fixed_t speed, fixed_t dest,
                      dboolean crush, int floorOrCeiling, int direction);
 
 int EV_BuildStairs(line_t* line, stair_e type);
 int EV_DoFloor(line_t* line, floor_e floortype, fixed_t speed);
-void T_MoveFloor(floormove_t* floor);
-void T_MoveSplitPlane(splitmove_t *split);
+void T_MoveFloor(void* floor);
+void T_MoveSplitPlane(void* split);
 int EV_SplitSector(line_t *line, dboolean sync);
 
 //
@@ -507,13 +501,15 @@ typedef struct {
 
 //thinkers
 
-void T_LightMorph(lightmorph_t* lt);
-void T_CountdownTimer(delay_t* timer);
-void T_MobjExplode(mobjexp_t *mexp);
-void T_LookAtCamera(aimcamera_t* camera);
-void T_MovingCamera(movecamera_t* camera);
-void T_MobjFadeThinker(mobjfade_t* mobjfade);
-void T_Quake(quake_t* quake);
-void T_TraceDrawer(tracedrawer_t* tdrawer);
+extern "C" {
+void T_LightMorph(void* lt);
+void T_CountdownTimer(void* timer);
+void T_MobjExplode(void* mexp);
+void T_LookAtCamera(void* camera);
+void T_MovingCamera(void* camera);
+void T_MobjFadeThinker(void* mobjfade);
+void T_Quake(void* quake);
+void T_TraceDrawer(void* tdrawer);
+} // extern "C"
 
 #endif

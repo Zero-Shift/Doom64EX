@@ -85,7 +85,7 @@ extern int          deathmatch;
 extern int          video_width;
 extern int          video_height;
 extern float        video_ratio;
-extern int          window_focused;
+extern bool         window_focused;
 
 
 // -------------------------
@@ -183,10 +183,10 @@ typedef struct {
     int         type;
     int         cluster;
     int         exitdelay;
-    dboolean    nointermission;
-    dboolean    clearchts;
-    dboolean    forcegodmode;
-    dboolean    contmusexit;
+    bool        nointermission;
+    bool        clearchts;
+    bool        forcegodmode;
+    bool        contmusexit;
     int         oldcollision;
     int         allowjump;
     int         allowfreelook;
